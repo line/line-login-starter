@@ -1,0 +1,10 @@
+server:
+    port: 9000
+
+management:
+    address: 127.0.0.1
+    port: 9100
+
+logging:
+    level:
+        com.linecorp.sample: DEBUG
