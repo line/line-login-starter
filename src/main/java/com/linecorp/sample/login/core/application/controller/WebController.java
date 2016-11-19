@@ -73,16 +73,29 @@ public class WebController {
     @RequestMapping("/auth")
     public String auth(
             HttpSession httpSession,
-            @RequestParam(value = "state") String state,
-            @RequestParam(value = "code") String code) {
+            @RequestParam(value = "code", required = false) String code,
+            @RequestParam(value = "state", required = false) String state,
+            @RequestParam(value = "error", required = false) String error,
+            @RequestParam(value = "errorCode", required = false) String errorCode,
+            @RequestParam(value = "errorMessage", required = false) String errorMessage) {
 
-        if (!state.equals(httpSession.getAttribute(LINE_WEB_LOGIN_STATE))){
-            throw new IllegalArgumentException();
-        };
-        httpSession.removeAttribute(LINE_WEB_LOGIN_STATE);
         if (logger.isDebugEnabled()) {
-            logger.debug("code : " + code);
+            logger.debug("parameter code : " + code);
+            logger.debug("parameter state : " + state);
+            logger.debug("parameter error : " + error);
+            logger.debug("parameter errorCode : " + errorCode);
+            logger.debug("parameter errorMessage : " + errorMessage);
         }
+
+        if (error != null || errorCode != null || errorMessage != null){
+            return "redirect:/loginCancel";
+        };
+        
+        if (!state.equals(httpSession.getAttribute(LINE_WEB_LOGIN_STATE))){
+            return "redirect:/sessionError";
+        };
+        
+        httpSession.removeAttribute(LINE_WEB_LOGIN_STATE);
         AccessToken token = lineAPIService.accessToken(code);
         if (logger.isDebugEnabled()) {
             logger.debug("mid : " + token.mid);
@@ -95,4 +108,21 @@ public class WebController {
 
         return "user/success";
     }
+    
+    /**
+    * <p>login Error Page
+    */
+    @RequestMapping("/loginCancel")
+    public String loginError() {
+    	return "user/login_cancel";
+    }
+
+    /**
+    * <p>Session Error Page
+    */
+    @RequestMapping("/sessionError")
+    public String sessionError() {
+    	return "user/session_error";
+    }
+
 }
