@@ -42,18 +42,21 @@ public class LineConfig {
         return channelSecret;
     }
 
-    public String getLineWebLoginUrl(String state) {
-        return "https://access.line.me/dialog/oauth/weblogin?response_type=code"
-                + "&client_id=" + channelId
-                + "&redirect_uri=" + getEncodedRedirectUrl()
-                + "&state=" + state;
+    public String getRedirectUrl(){
+        return redirectUrl;
     }
 
-    public String getEncodedRedirectUrl() {
+    public String getLineWebLoginUrl(String state) {
+    	final String encodedRedirectUrl;
         try {
-            return URLEncoder.encode(redirectUrl, "UTF-8");
+            encodedRedirectUrl = URLEncoder.encode(getRedirectUrl(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
+    			
+        return "https://access.line.me/dialog/oauth/weblogin?response_type=code"
+                + "&client_id=" + channelId
+                + "&redirect_uri=" + encodedRedirectUrl
+                + "&state=" + state;
     }
 }
