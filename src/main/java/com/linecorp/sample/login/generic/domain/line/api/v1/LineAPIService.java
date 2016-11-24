@@ -45,7 +45,7 @@ public class LineAPIService {
                 GRANT_TYPE_AUTHORIZATION_CODE,
                 lineConfig.getChannelId(),
                 lineConfig.getChannelSecret(),
-                lineConfig.getEncodedRedirectUrl(),
+                lineConfig.getRedirectUrl(),
                 code));
     }
 
