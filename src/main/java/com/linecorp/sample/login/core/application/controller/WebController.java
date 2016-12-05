@@ -47,7 +47,7 @@ public class WebController {
     /**
      * <p>LINE Login Button Page
      * <p>Login Type is to log in on any desktop or mobile website
-     * https://developers.line.me/web-login/overview#login_flow_type_web
+     * https://developers.line.me/web-api/overview#login_flow_type_web
      */
     @RequestMapping("/")
     public String login() {
@@ -68,7 +68,7 @@ public class WebController {
     /**
      * <p>Redirect Page from LINE Platform</p>
      * <p>Login Type is to log in on any desktop or mobile website
-     * https://developers.line.me/web-login/integrating-web-login#redirect_to_web_site
+     * https://developers.line.me/web-api/integrating-web-login#redirect_to_web_site
      */
     @RequestMapping("/auth")
     public String auth(
