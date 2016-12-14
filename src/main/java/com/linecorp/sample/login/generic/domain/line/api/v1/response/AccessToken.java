@@ -17,7 +17,7 @@ package com.linecorp.sample.login.generic.domain.line.api.v1.response;
 
 /**
  * <p>AccessToken object</p>
- * https://developers.line.me/web-login/integrating-web-login#obtain_access_token<br/>
+ * https://developers.line.me/web-api/integrating-web-login#obtain_access_token<br/>
  */
 public final class AccessToken {
 

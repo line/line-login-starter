@@ -13,7 +13,7 @@ This guide walks you through the process of implementing LINE Login into a Web s
 
 #### Register Your Channel
 
- - You must register your website as a Channel to use the features on the LINE Platform. For more details, see: [here](https://developers.line.me/web-login/channel-registration)
+ - You must register your website as a Channel to use the features on the LINE Platform. For more details, see: [here](https://developers.line.me/web-api/channel-registration)
 
 ## Deploy to Heroku with 'Deploy to Heroku' Button
 
@@ -32,7 +32,7 @@ For more details, see: [here](https://blog.heroku.com/archives/2014/8/7/heroku-b
 
 #### Fill in 'Redirect URL'
 
- - You must fill in 'Redirect URL' on the technical configuration page. For more details, see: [here](https://developers.line.me/web-login/technical-configuration)
+ - You must fill in 'Redirect URL' on the technical configuration page. For more details, see: [here](https://developers.line.me/web-api/technical-configuration)
 
 #### Open LINE Login Page
 

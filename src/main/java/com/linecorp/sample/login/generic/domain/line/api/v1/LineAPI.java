@@ -25,13 +25,13 @@ import retrofit2.http.POST;
 
 /**
  * <p>LINE v1 API interface</p>
- * https://developers.line.me/web-login/integrating-web-login
+ * https://developers.line.me/web-api/integrating-web-login
  */
 public interface LineAPI {
 
     /**
      * <p>Retrieving access tokens</p>
-     * https://developers.line.me/web-login/integrating-web-login#obtain_access_token<br/>
+     * https://developers.line.me/web-api/integrating-web-login#obtain_access_token<br/>
      */
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
