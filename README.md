@@ -1,4 +1,5 @@
 # Getting Started with LINE Login in Java on Heroku
+[![Build Status](https://travis-ci.org/line/line-login-starter.svg?branch=master)](https://travis-ci.org/line/line-login-starter)
 
 ## Overview
 
