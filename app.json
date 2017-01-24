@@ -11,8 +11,8 @@
       "description": "Channel secret",
       "required": true
     },
-    "LINECORP_PLATFORM_CHANNEL_CALLBACKURL": {
-      "description": "Callback URL",
+    "LINECORP_PLATFORM_CHANNEL_CALLBACKURI": {
+      "description": "Callback URI",
       "required": true
     }
   }
