@@ -13,19 +13,20 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-package com.linecorp.sample.login.core.application.controller;
+package com.linecorp.sample.login.application.controller;
 
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.linecorp.sample.login.generic.domain.line.LineConfig;
-import com.linecorp.sample.login.generic.domain.line.api.v1.LineAPIService;
-import com.linecorp.sample.login.generic.domain.line.api.v1.response.AccessToken;
+import com.linecorp.sample.login.infra.line.api.v2.LineAPIService;
+import com.linecorp.sample.login.infra.line.api.v2.response.AccessToken;
+import com.linecorp.sample.login.infra.line.api.v2.response.Profile;
 import com.linecorp.sample.login.infra.utils.CommonUtils;
 
 /**
@@ -35,11 +36,8 @@ import com.linecorp.sample.login.infra.utils.CommonUtils;
 public class WebController {
 
     private static final String LINE_WEB_LOGIN_STATE= "lineWebLoginState";
-    private static final String ACCESS_TOKEN = "accessToken";
+    static final String ACCESS_TOKEN = "accessToken";
     private static final Logger logger = Logger.getLogger(WebController.class);
-
-    @Autowired
-    private LineConfig lineConfig;
 
     @Autowired
     private LineAPIService lineAPIService;
@@ -47,7 +45,6 @@ public class WebController {
     /**
      * <p>LINE Login Button Page
      * <p>Login Type is to log in on any desktop or mobile website
-     * https://developers.line.me/web-api/overview#login_flow_type_web
      */
     @RequestMapping("/")
     public String login() {
@@ -61,20 +58,20 @@ public class WebController {
     public String goToAuthPage(HttpSession httpSession){
         final String state = CommonUtils.getToken();
         httpSession.setAttribute(LINE_WEB_LOGIN_STATE, state);
-        final String url = lineConfig.getLineWebLoginUrl(state);
+        final String url = lineAPIService.getLineWebLoginUrl(state);
         return "redirect:" + url;
     }
 
     /**
      * <p>Redirect Page from LINE Platform</p>
      * <p>Login Type is to log in on any desktop or mobile website
-     * https://developers.line.me/web-api/integrating-web-login#redirect_to_web_site
      */
     @RequestMapping("/auth")
     public String auth(
             HttpSession httpSession,
             @RequestParam(value = "code", required = false) String code,
             @RequestParam(value = "state", required = false) String state,
+            @RequestParam(value = "scope", required = false) String scope,
             @RequestParam(value = "error", required = false) String error,
             @RequestParam(value = "errorCode", required = false) String errorCode,
             @RequestParam(value = "errorMessage", required = false) String errorMessage) {
@@ -82,6 +79,7 @@ public class WebController {
         if (logger.isDebugEnabled()) {
             logger.debug("parameter code : " + code);
             logger.debug("parameter state : " + state);
+            logger.debug("parameter scope : " + scope);
             logger.debug("parameter error : " + error);
             logger.debug("parameter errorCode : " + errorCode);
             logger.debug("parameter errorMessage : " + errorMessage);
@@ -90,31 +88,51 @@ public class WebController {
         if (error != null || errorCode != null || errorMessage != null){
             return "redirect:/loginCancel";
         };
-        
+
         if (!state.equals(httpSession.getAttribute(LINE_WEB_LOGIN_STATE))){
             return "redirect:/sessionError";
         };
-        
+
         httpSession.removeAttribute(LINE_WEB_LOGIN_STATE);
         AccessToken token = lineAPIService.accessToken(code);
         if (logger.isDebugEnabled()) {
-            logger.debug("mid : " + token.mid);
+            logger.debug("scope : " + token.scope);
             logger.debug("access_token : " + token.access_token);
-            logger.debug("refresh_token : " + token.refresh_token);
+            logger.debug("token_type : " + token.token_type);
             logger.debug("expires_in : " + token.expires_in);
+            logger.debug("refresh_token : " + token.refresh_token);
         }
-
         httpSession.setAttribute(ACCESS_TOKEN, token);
+        return "redirect:/success";
+    }
 
+    /**
+    * <p>login success Page
+    */
+    @RequestMapping("/success")
+    public String success(HttpSession httpSession, Model model) {
+
+        AccessToken token = (AccessToken)httpSession.getAttribute(ACCESS_TOKEN);
+        if (token == null){
+            return "redirect:/";
+        };
+        Profile profile = lineAPIService.profile(token);
+        if (logger.isDebugEnabled()) {
+            logger.debug("userId : " + profile.userId);
+            logger.debug("displayName : " + profile.displayName);
+            logger.debug("pictureUrl : " + profile.pictureUrl);
+            logger.debug("statusMessage : " + profile.statusMessage);
+        }
+        model.addAttribute("profile", profile);
         return "user/success";
     }
-    
+
     /**
-    * <p>login Error Page
+    * <p>login Cancel Page
     */
     @RequestMapping("/loginCancel")
-    public String loginError() {
-    	return "user/login_cancel";
+    public String loginCancel() {
+        return "user/login_cancel";
     }
 
     /**
@@ -122,7 +140,7 @@ public class WebController {
     */
     @RequestMapping("/sessionError")
     public String sessionError() {
-    	return "user/session_error";
+        return "user/session_error";
     }
 
 }

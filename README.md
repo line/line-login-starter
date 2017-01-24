@@ -1,60 +1,60 @@
-# Getting Started with LINE Login in Java on Heroku
+# LINE Login Starter Application
 [![Build Status](https://travis-ci.org/line/line-login-starter.svg?branch=master)](https://travis-ci.org/line/line-login-starter)
 
-## Overview
+This is a starter application to help you get started on integrating the LINE Web Login feature into your website. Web Login lets users log in to your website using their LINE account.
 
-This guide walks you through the process of implementing LINE Login into a Web server with Spring Boot on Heroku.
+## Getting started with LINE Login in Java with Heroku
+Here we'll go through how you can implement Web Login on a web server using Spring Boot and Heroku.
 
-## Requirements
+### Requirements
 
- - JDK 1.8 or later
- - Maven 3.0+
+ - JDK 1.8 or higher
+ - Maven 3.0 or higher
  - Git
- - a free [Heroku](https://dashboard.heroku.com/) account
+ - A free [Heroku](https://dashboard.heroku.com/) account
 
-#### Register Your Channel
+### Creating a Channel
 
- - You must register your website as a Channel to use the features on the LINE Platform. For more details, see: [here](https://developers.line.me/web-api/channel-registration)
+To use LINE Login, you must create a Channel for your website. For information on how to create a Channel, go to [Creating a Channel](https://developers.line.me/web-api/channel-registration) on the LINE Developers site.   
 
-## Deploy to Heroku with 'Deploy to Heroku' Button
+### Deploying the LINE Login starter application
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
-The 'Deploy to Heroku' button enables you to deploy 'LINE Login Sample Application' to Heroku without leaving the web browser, and with little configuration.
-For more details, see: [here](https://blog.heroku.com/archives/2014/8/7/heroku-button)
+With the "Deploy to Heroku" button, you can easily deploy the LINE Login starter application to Heroku from your web browser by following the steps below.
 
- - Push 'Deploy to Heroku' Button, then you redirect Heroku Page
- - Set Heroku App Name
- - Set below Heroku Config
-     - Channel ID :  You can see 'Channel ID' on Basic information page
-     - Channel Secret : You can see 'Channel Secret' on Basic information page
-     - Redirect URL : https:// + 'heroku App Name' + .herokuapp.com/auth
- - Push 'Deploy For Free' Button, then Heroku start deploying the source on this repo to a new app on your account
+#### Heroku configuration
 
-#### Fill in 'Redirect URL'
+1. Click the **Deploy to Heroku** button to go to the Heroku Dashboard to configure and deploy the app.
+2. Enter a Heroku app name (optional).
+3. Enter the following Heroku config variables.
+    - **Channel ID:** Found on the "Basic information" page in the Channel Console
+    - **Channel secret:** Found on the "Basic information" page in the Channel Console
+    - **Callback URL:** https:// + "Heroku app name" + .herokuapp.com/auth
+4. Click the **Deploy** button. Heroku then deploys this repository to a new Heroku app on your account.
 
- - You must fill in 'Redirect URL' on the technical configuration page. For more details, see: [here](https://developers.line.me/web-api/technical-configuration)
+#### Channel Console
 
-#### Open LINE Login Page
+- Fill in the **Callback URL** field in the "Technical configuration" page on the Channel Console. For more details, see [Technical configuration](https://developers.line.me/web-api/technical-configuration).
 
- - When setup is complete, you can open LINE Login Page(https:// + 'heroku App Name' + .herokuapp.com/) in your browser.
+#### LINE Login screen
 
-## View logs
+- Open the LINE Login screen (https:// + "heroku App Name" + .herokuapp.com) in your browser and log in using your LINE account.
 
-#### Install heroku toolbelt and Log in
+### Viewing logs
 
- - install [this](https://toolbelt.heroku.com/)
- - Log in your Heroku account.
+#### Heroku CLI
+- Install [Heroku CLI (Heroku Toolbelt)](https://devcenter.heroku.com/articles/heroku-cli#download-and-install)
+- Log in to your Heroku account
 ```
 $ heroku login
 ```
 
 #### View logs
+- Clone the source of your existing application from Heroku using Git. For more details, see [Git Cloning Existing Heroku Applications](https://devcenter.heroku.com/articles/git-clone-heroku-app).
+- Use the `heroku logs` comamnd to fetch logs. For more details, see [View logs](https://devcenter.heroku.com/articles/logging#view-logs).
 
- - Clone the source of an existing application from Heroku using Git. For more details, see: [here](https://devcenter.heroku.com/articles/git-clone-heroku-app)
- - fetch logs, use the heroku logs command. For more details, see: [here](https://devcenter.heroku.com/articles/logging#view-logs)
-
-```
+ ```
 $ heroku git:clone -a yourapp
 $ heroku logs --tail
 ```

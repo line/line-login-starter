@@ -13,24 +13,18 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-package com.linecorp.sample.login.generic.domain.line.api.v1.response;
+package com.linecorp.sample.login.infra.line.api.v2.response;
 
-/**
- * <p>AccessToken object</p>
- * https://developers.line.me/web-api/integrating-web-login#obtain_access_token<br/>
- */
-public final class AccessToken {
+public final class Verify {
 
-    public final String mid;
-    public final String access_token;
+    public final String scope;
+    public final String client_id;
     public final Integer expires_in;
-    public final String refresh_token;
 
-    public AccessToken(String mid, String access_token, Integer expires_in, String refresh_token) {
-        this.mid = mid;
-        this.access_token = access_token;
+    public Verify(String scope, String client_id, Integer expires_in) {
+        this.scope = scope;
+        this.client_id = client_id;
         this.expires_in = expires_in;
-        this.refresh_token = refresh_token;
     }
 
 }
