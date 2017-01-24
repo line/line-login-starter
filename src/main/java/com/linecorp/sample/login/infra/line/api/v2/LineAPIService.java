@@ -42,15 +42,15 @@ public class LineAPIService {
     private String channelId;
     @Value("${linecorp.platform.channel.channelSecret}")
     private String channelSecret;
-    @Value("${linecorp.platform.channel.callbackUri}")
-    private String callbackUri;
+    @Value("${linecorp.platform.channel.callbackUrl}")
+    private String callbackUrl;
 
     public AccessToken accessToken(String code) {
         return getClient(t -> t.accessToken(
                 GRANT_TYPE_AUTHORIZATION_CODE,
                 channelId,
                 channelSecret,
-                callbackUri,
+                callbackUrl,
                 code));
     }
 
@@ -76,16 +76,16 @@ public class LineAPIService {
 
 
     public String getLineWebLoginUrl(String state) {
-        final String encodedCallbackUri;
+        final String encodedCallbackUrl;
         try {
-            encodedCallbackUri = URLEncoder.encode(callbackUri, "UTF-8");
+            encodedCallbackUrl = URLEncoder.encode(callbackUrl, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
 
         return "https://access.line.me/dialog/oauth/weblogin?response_type=code"
                 + "&client_id=" + channelId
-                + "&redirect_uri=" + encodedCallbackUri
+                + "&redirect_uri=" + encodedCallbackUrl
                 + "&state=" + state;
     }
 
