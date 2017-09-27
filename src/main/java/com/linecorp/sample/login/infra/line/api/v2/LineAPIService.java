@@ -18,6 +18,7 @@ package com.linecorp.sample.login.infra.line.api.v2;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.function.Function;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -63,32 +64,40 @@ public class LineAPIService {
     }
 
     public Verify verify(final AccessToken accessToken) {
-        return getClient(t -> t.verify(accessToken.access_token));
+        return getClient(t -> t.verify(
+                accessToken.access_token,
+                channelId,
+                channelSecret));
     }
 
     public void revoke(final AccessToken accessToken) {
-        getClient(t -> t.revoke(accessToken.refresh_token));
+        getClient(t -> t.revoke(
+                accessToken.refresh_token,
+                channelId,
+                channelSecret));
     }
-
+    
     public Profile profile(final AccessToken accessToken) {
         return getClient(t -> t.profile(addBearer(accessToken)));
     }
 
-
-    public String getLineWebLoginUrl(String state) {
+    public String getLineWebLoginUrl(String state, String nonce, List<String> scopes) {
         final String encodedCallbackUrl;
+        final String scope = String.join("%20", scopes);
+
         try {
             encodedCallbackUrl = URLEncoder.encode(callbackUrl, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
 
-        return "https://access.line.me/dialog/oauth/weblogin?response_type=code"
+        return "https://access.line.me/oauth2/v2.1/authorize?response_type=code"
                 + "&client_id=" + channelId
                 + "&redirect_uri=" + encodedCallbackUrl
-                + "&state=" + state;
+                + "&state=" + state
+                + "&scope=" + scope
+                + "&nonce=" + nonce;
     }
-
 
     private <R> R getClient(final Function<LineAPI, Call<R>> function) {
         return Client.getClient("https://api.line.me/", LineAPI.class, function);

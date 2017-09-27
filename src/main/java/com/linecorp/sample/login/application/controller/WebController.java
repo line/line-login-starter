@@ -16,6 +16,7 @@
 package com.linecorp.sample.login.application.controller;
 
 import javax.servlet.http.HttpSession;
+import java.util.Arrays;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,8 +58,9 @@ public class WebController {
     @RequestMapping(value = "/gotoauthpage")
     public String goToAuthPage(HttpSession httpSession){
         final String state = CommonUtils.getToken();
+        final String nonce = CommonUtils.getToken();
         httpSession.setAttribute(LINE_WEB_LOGIN_STATE, state);
-        final String url = lineAPIService.getLineWebLoginUrl(state);
+        final String url = lineAPIService.getLineWebLoginUrl(state, nonce, Arrays.asList("openid", "profile"));
         return "redirect:" + url;
     }
 
@@ -101,6 +103,7 @@ public class WebController {
             logger.debug("token_type : " + token.token_type);
             logger.debug("expires_in : " + token.expires_in);
             logger.debug("refresh_token : " + token.refresh_token);
+            logger.debug("id_token : " + token.id_token);
         }
         httpSession.setAttribute(ACCESS_TOKEN, token);
         return "redirect:/success";
