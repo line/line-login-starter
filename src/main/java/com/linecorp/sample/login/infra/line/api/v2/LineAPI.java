@@ -34,7 +34,7 @@ public interface LineAPI {
 
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
-    @POST("v2/oauth/accessToken")
+    @POST("oauth2/v2.1/token")
     Call<AccessToken> accessToken(
             @Field("grant_type") String grant_type,
             @Field("client_id") String client_id,
@@ -44,7 +44,7 @@ public interface LineAPI {
 
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
-    @POST("v2/oauth/accessToken")
+    @POST("oauth2/v2.1/token")
     Call<AccessToken> refreshToken(
             @Field("grant_type") String grant_type,
             @Field("refresh_token") String refresh_token,
@@ -53,14 +53,20 @@ public interface LineAPI {
 
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
-    @POST("v2/oauth/verify")
-    Call<Verify> verify(@Field("access_token") String access_token);
+    @POST("oauth2/v2.1/verify")
+    Call<Verify> verify(
+            @Field("access_token") String access_token,
+            @Field("client_id") String client_id,
+            @Field("client_secret") String client_secret);
 
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
-    @POST("v2/oauth/revoke")
-    Call<Void> revoke(@Field("refresh_token") String refresh_token);
-
+    @POST("oauth2/v2.1/revoke")
+    Call<Void> revoke(
+            @Field("refresh_token") String refresh_token,
+            @Field("client_id") String client_id,
+            @Field("client_secret") String client_secret);
+    
     @GET("v2/profile")
     Call<Profile> profile(@Header("Authorization") String accessToken);
 
