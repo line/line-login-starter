@@ -65,14 +65,12 @@ public class LineAPIService {
 
     public Verify verify(final AccessToken accessToken) {
         return getClient(t -> t.verify(
-                accessToken.access_token,
-                channelId,
-                channelSecret));
+                accessToken.access_token));
     }
 
     public void revoke(final AccessToken accessToken) {
         getClient(t -> t.revoke(
-                accessToken.refresh_token,
+                accessToken.access_token,
                 channelId,
                 channelSecret));
     }
