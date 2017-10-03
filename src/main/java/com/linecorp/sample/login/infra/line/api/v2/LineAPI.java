@@ -20,12 +20,13 @@ import com.linecorp.sample.login.infra.line.api.v2.response.Profile;
 import com.linecorp.sample.login.infra.line.api.v2.response.Verify;
 
 import retrofit2.Call;
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.Field;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
-import retrofit2.http.POST;
+import retrofit2.http.Query;
 
 /**
  * <p>LINE v2 API interface</p>
@@ -52,18 +53,15 @@ public interface LineAPI {
             @Field("client_secret") String client_secret);
 
     @Headers("Content-Type: application/x-www-form-urlencoded")
-    @FormUrlEncoded
-    @POST("oauth2/v2.1/verify")
+    @GET("oauth2/v2.1/verify")
     Call<Verify> verify(
-            @Field("access_token") String access_token,
-            @Field("client_id") String client_id,
-            @Field("client_secret") String client_secret);
+            @Query("access_token") String access_token);
 
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
     @POST("oauth2/v2.1/revoke")
     Call<Void> revoke(
-            @Field("refresh_token") String refresh_token,
+            @Field("access_token") String access_token,
             @Field("client_id") String client_id,
             @Field("client_secret") String client_secret);
     
