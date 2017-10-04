@@ -70,6 +70,15 @@
       <version>2.6.2</version>
     </dependency>
 
+    <!-- JWT library -->
+    <!-- use MIT License -->
+    <!-- https://github.com/auth0/java-jwt/blob/master/LICENSE -->
+    <dependency>
+        <groupId>com.auth0</groupId>
+        <artifactId>java-jwt</artifactId>
+        <version>3.2.0</version>
+    </dependency>
+
   </dependencies>
 
   <!-- ================================================================ -->
