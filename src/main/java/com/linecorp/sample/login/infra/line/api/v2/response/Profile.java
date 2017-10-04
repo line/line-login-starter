@@ -20,11 +20,13 @@ public final class Profile {
     public final String displayName;
     public final String userId;
     public final String pictureUrl;
+    public final String statusMessage;
 
-    public Profile(String displayName, String userId, String pictureUrl) {
+    public Profile(String displayName, String userId, String pictureUrl, String statusMessage) {
         this.displayName = displayName;
         this.userId = userId;
         this.pictureUrl = pictureUrl;
+        this.statusMessage = statusMessage;
     }
 
 }
