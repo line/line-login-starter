@@ -29,7 +29,6 @@ import com.linecorp.sample.login.infra.line.api.v2.LineAPIService;
 import com.linecorp.sample.login.infra.line.api.v2.response.AccessToken;
 import com.linecorp.sample.login.infra.line.api.v2.response.Profile;
 import com.linecorp.sample.login.infra.utils.CommonUtils;
-import com.linecorp.sample.login.infra.utils.JwtUtils;
 
 /**
  * <p>user web application pages</p>
@@ -40,12 +39,10 @@ public class WebController {
     private static final String LINE_WEB_LOGIN_STATE= "lineWebLoginState";
     static final String ACCESS_TOKEN = "accessToken";
     private static final Logger logger = Logger.getLogger(WebController.class);
-    private static final String NONCE = "nonce";
-    
+
     @Autowired
     private LineAPIService lineAPIService;
-    @Autowired
-    private JwtUtils jwtUtils;
+
     /**
      * <p>LINE Login Button Page
      * <p>Login Type is to log in on any desktop or mobile website
@@ -63,7 +60,6 @@ public class WebController {
         final String state = CommonUtils.getToken();
         final String nonce = CommonUtils.getToken();
         httpSession.setAttribute(LINE_WEB_LOGIN_STATE, state);
-        httpSession.setAttribute(NONCE, nonce);
         final String url = lineAPIService.getLineWebLoginUrl(state, nonce, Arrays.asList("openid", "profile"));
         return "redirect:" + url;
     }
@@ -123,18 +119,12 @@ public class WebController {
         if (token == null){
             return "redirect:/";
         };
-
-        if (!jwtUtils.verify(token.id_token, (String)httpSession.getAttribute(NONCE))) {
-            //verify failed
-            return "redirect:/";
-        }
-
-        httpSession.removeAttribute(NONCE);
-        Profile profile = jwtUtils.getProfile(token.id_token);
+        Profile profile = lineAPIService.profile(token);
         if (logger.isDebugEnabled()) {
             logger.debug("userId : " + profile.userId);
             logger.debug("displayName : " + profile.displayName);
             logger.debug("pictureUrl : " + profile.pictureUrl);
+            logger.debug("statusMessage : " + profile.statusMessage);
         }
         model.addAttribute("profile", profile);
         return "user/success";
