@@ -15,10 +15,7 @@
  */
 package com.linecorp.sample.login.infra.line.api.v2.response;
 
-import com.auth0.jwt.interfaces.DecodedJWT;
-
 public final class IdToken {
-    private DecodedJWT jwt;
     private String iss;
     private String sub;
     private String aud;
@@ -28,16 +25,15 @@ public final class IdToken {
     private String name;
     private String picture;
 
-    public IdToken(DecodedJWT jwt) {
-        this.jwt = jwt;
-        this.iss = jwt.getClaim("iss").asString();
-        this.sub = jwt.getClaim("sub").asString();
-        this.aud = jwt.getClaim("aud").asString();
-        this.exp = jwt.getClaim("exp").asLong();
-        this.iat = jwt.getClaim("iat").asLong();
-        this.nonce = jwt.getClaim("nonce").asString();
-        this.name = jwt.getClaim("name").asString();
-        this.picture = jwt.getClaim("picture").asString();
+    public IdToken(String iss, String sub, String aud, Long exp, Long iat, String nonce, String name, String picture) {
+        this.iss = iss;
+        this.sub = sub;
+        this.aud = aud;
+        this.exp = exp;
+        this.iat = iat;
+        this.nonce = nonce;
+        this.name = name;
+        this.picture = picture;
     };
 
     public String getUserId() {
@@ -52,3 +48,4 @@ public final class IdToken {
         return picture;
     }
 }
+

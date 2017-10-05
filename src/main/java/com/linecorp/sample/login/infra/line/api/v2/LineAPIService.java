@@ -30,6 +30,13 @@ import com.linecorp.sample.login.infra.line.api.v2.response.Verify;
 
 import retrofit2.Call;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.linecorp.sample.login.infra.line.api.v2.response.IdToken;
+
 /**
  * <p>LINE v2 API Access</p>
  */
@@ -74,9 +81,13 @@ public class LineAPIService {
                 channelId,
                 channelSecret));
     }
-    
-    public Profile profile(final AccessToken accessToken) {
-        return getClient(t -> t.profile(addBearer(accessToken)));
+
+    public Profile profile(String id_token) {
+        IdToken idToken = deCodeIdToken(id_token);
+        return new Profile(
+                idToken.getDispalyName(),
+                idToken.getUserId(),
+                idToken.getPictureUrl());
     }
 
     public String getLineWebLoginUrl(String state, String nonce, List<String> scopes) {
@@ -97,11 +108,43 @@ public class LineAPIService {
                 + "&nonce=" + nonce;
     }
 
+    public boolean verifyIdToken(String id_token, String nonce) {
+        try {
+            JWT.require(
+                Algorithm.HMAC256(channelSecret))
+                .withIssuer("https://access.line.me")
+                .withAudience(channelId)
+                .withClaim("nonce", nonce)
+                .build()
+                .verify(id_token);
+            return true;
+        } catch (UnsupportedEncodingException e) {
+            //UTF-8 encoding not supported
+            return false;
+        } catch (JWTVerificationException e) {
+            //Invalid signature/claims
+            return false;
+        }
+    }
+
     private <R> R getClient(final Function<LineAPI, Call<R>> function) {
         return Client.getClient("https://api.line.me/", LineAPI.class, function);
     }
 
-    private String addBearer(final AccessToken accessToken) {
-        return "Bearer " + accessToken.access_token;
+    private IdToken deCodeIdToken(String id_token) {
+        try {
+            DecodedJWT jwt = JWT.decode(id_token);
+            return new IdToken(
+                    jwt.getClaim("iss").asString(),
+                    jwt.getClaim("sub").asString(),
+                    jwt.getClaim("aud").asString(),
+                    jwt.getClaim("ext").asLong(),
+                    jwt.getClaim("iat").asLong(),
+                    jwt.getClaim("nonce").asString(),
+                    jwt.getClaim("name").asString(),
+                    jwt.getClaim("picture").asString());
+        } catch (JWTDecodeException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

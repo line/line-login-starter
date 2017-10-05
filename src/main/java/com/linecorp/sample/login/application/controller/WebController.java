@@ -28,9 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.linecorp.sample.login.infra.line.api.v2.LineAPIService;
 import com.linecorp.sample.login.infra.line.api.v2.response.AccessToken;
 import com.linecorp.sample.login.infra.line.api.v2.response.Profile;
-import com.linecorp.sample.login.infra.line.api.v2.response.IdToken;
 import com.linecorp.sample.login.infra.utils.CommonUtils;
-import com.linecorp.sample.login.infra.utils.JwtUtils;
 
 /**
  * <p>user web application pages</p>
@@ -45,8 +43,6 @@ public class WebController {
 
     @Autowired
     private LineAPIService lineAPIService;
-    @Autowired
-    private JwtUtils jwtUtils;
 
     /**
      * <p>LINE Login Button Page
@@ -65,6 +61,7 @@ public class WebController {
         final String state = CommonUtils.getToken();
         final String nonce = CommonUtils.getToken();
         httpSession.setAttribute(LINE_WEB_LOGIN_STATE, state);
+        httpSession.setAttribute(NONCE, nonce);
         final String url = lineAPIService.getLineWebLoginUrl(state, nonce, Arrays.asList("openid", "profile"));
         return "redirect:" + url;
     }
@@ -125,14 +122,13 @@ public class WebController {
             return "redirect:/";
         }
 
-        if (!jwtUtils.isValid(token.id_token, (String)httpSession.getAttribute(NONCE))){
+        if (!lineAPIService.verifyIdToken(token.id_token, (String) httpSession.getAttribute(NONCE))) {
             // verify failed
             return "redirect:/";
         }
 
-        IdToken idToken = jwtUtils.decode(token.id_token);
         httpSession.removeAttribute(NONCE);
-        Profile profile = new Profile(idToken.getDispalyName(), idToken.getUserId(), idToken.getPictureUrl());
+        Profile profile = lineAPIService.profile(token.id_token);
         if (logger.isDebugEnabled()) {
             logger.debug("userId : " + profile.userId);
             logger.debug("displayName : " + profile.displayName);
