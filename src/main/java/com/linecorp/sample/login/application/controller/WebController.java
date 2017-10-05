@@ -28,7 +28,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.linecorp.sample.login.infra.line.api.v2.LineAPIService;
 import com.linecorp.sample.login.infra.line.api.v2.response.AccessToken;
 import com.linecorp.sample.login.infra.line.api.v2.response.Profile;
+import com.linecorp.sample.login.infra.line.api.v2.response.IdToken;
 import com.linecorp.sample.login.infra.utils.CommonUtils;
+import com.linecorp.sample.login.infra.utils.JwtUtils;
 
 /**
  * <p>user web application pages</p>
@@ -36,12 +38,15 @@ import com.linecorp.sample.login.infra.utils.CommonUtils;
 @Controller
 public class WebController {
 
-    private static final String LINE_WEB_LOGIN_STATE= "lineWebLoginState";
+    private static final String LINE_WEB_LOGIN_STATE = "lineWebLoginState";
     static final String ACCESS_TOKEN = "accessToken";
     private static final Logger logger = Logger.getLogger(WebController.class);
+    private static final String NONCE = "nonce";
 
     @Autowired
     private LineAPIService lineAPIService;
+    @Autowired
+    private JwtUtils jwtUtils;
 
     /**
      * <p>LINE Login Button Page
@@ -89,11 +94,11 @@ public class WebController {
 
         if (error != null || errorCode != null || errorMessage != null){
             return "redirect:/loginCancel";
-        };
+        }
 
         if (!state.equals(httpSession.getAttribute(LINE_WEB_LOGIN_STATE))){
             return "redirect:/sessionError";
-        };
+        }
 
         httpSession.removeAttribute(LINE_WEB_LOGIN_STATE);
         AccessToken token = lineAPIService.accessToken(code);
@@ -118,13 +123,20 @@ public class WebController {
         AccessToken token = (AccessToken)httpSession.getAttribute(ACCESS_TOKEN);
         if (token == null){
             return "redirect:/";
-        };
-        Profile profile = lineAPIService.profile(token);
+        }
+
+        if (!jwtUtils.isValid(token.id_token, (String)httpSession.getAttribute(NONCE))){
+            // verify failed
+            return "redirect:/";
+        }
+
+        IdToken idToken = jwtUtils.decode(token.id_token);
+        httpSession.removeAttribute(NONCE);
+        Profile profile = new Profile(idToken.getDispalyName(), idToken.getUserId(), idToken.getPictureUrl());
         if (logger.isDebugEnabled()) {
             logger.debug("userId : " + profile.userId);
             logger.debug("displayName : " + profile.displayName);
             logger.debug("pictureUrl : " + profile.pictureUrl);
-            logger.debug("statusMessage : " + profile.statusMessage);
         }
         model.addAttribute("profile", profile);
         return "user/success";
