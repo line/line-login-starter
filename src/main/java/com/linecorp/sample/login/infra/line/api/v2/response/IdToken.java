@@ -15,18 +15,26 @@
  */
 package com.linecorp.sample.login.infra.line.api.v2.response;
 
-public final class Profile {
+public final class IdToken {
+    public final String iss;
+    public final String sub;
+    public final String aud;
+    public final Long exp;
+    public final Long iat;
+    public final String nonce;
+    public final String name;
+    public final String picture;
 
-    public final String displayName;
-    public final String userId;
-    public final String pictureUrl;
-    public final String statusMessage;
-
-    public Profile(String displayName, String userId, String pictureUrl, String statusMessage) {
-        this.displayName = displayName;
-        this.userId = userId;
-        this.pictureUrl = pictureUrl;
-        this.statusMessage = statusMessage;
-    }
+    public IdToken(String iss, String sub, String aud, Long exp, Long iat, String nonce, String name, String picture) {
+        this.iss = iss;
+        this.sub = sub;
+        this.aud = aud;
+        this.exp = exp;
+        this.iat = iat;
+        this.nonce = nonce;
+        this.name = name;
+        this.picture = picture;
+    };
 
 }
+

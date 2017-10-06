@@ -30,9 +30,8 @@
         <div class="col-md-4 col-md-offset-4">
           <div class="area">
             <div class="center-block profile-margin">
-              <img th:src="${profile.pictureUrl}" class="profile-img img-circle" />
-              <h3 th:text="${profile.displayName}"></h3>
-              <p th:text="${profile.statusMessage}" class="lead"></p>
+              <img th:src="${idToken.picture}" class="profile-img img-circle" />
+              <h3 th:text="${idToken.name}"></h3>
               <button type="button" id="verify" class="btn btn-success btn-lg btn-block profile-button">verify</button>
               <button type="button" id="refreshToken" class="btn btn-success btn-lg btn-block profile-button">refreshToken</button>
               <button type="button" id="revoke" class="btn btn-success btn-lg btn-block profile-button">revoke</button>

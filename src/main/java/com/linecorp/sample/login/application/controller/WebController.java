@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.linecorp.sample.login.infra.line.api.v2.LineAPIService;
 import com.linecorp.sample.login.infra.line.api.v2.response.AccessToken;
-import com.linecorp.sample.login.infra.line.api.v2.response.Profile;
+import com.linecorp.sample.login.infra.line.api.v2.response.IdToken;
 import com.linecorp.sample.login.infra.utils.CommonUtils;
 
 /**
@@ -36,9 +36,10 @@ import com.linecorp.sample.login.infra.utils.CommonUtils;
 @Controller
 public class WebController {
 
-    private static final String LINE_WEB_LOGIN_STATE= "lineWebLoginState";
+    private static final String LINE_WEB_LOGIN_STATE = "lineWebLoginState";
     static final String ACCESS_TOKEN = "accessToken";
     private static final Logger logger = Logger.getLogger(WebController.class);
+    private static final String NONCE = "nonce";
 
     @Autowired
     private LineAPIService lineAPIService;
@@ -60,6 +61,7 @@ public class WebController {
         final String state = CommonUtils.getToken();
         final String nonce = CommonUtils.getToken();
         httpSession.setAttribute(LINE_WEB_LOGIN_STATE, state);
+        httpSession.setAttribute(NONCE, nonce);
         final String url = lineAPIService.getLineWebLoginUrl(state, nonce, Arrays.asList("openid", "profile"));
         return "redirect:" + url;
     }
@@ -89,11 +91,11 @@ public class WebController {
 
         if (error != null || errorCode != null || errorMessage != null){
             return "redirect:/loginCancel";
-        };
+        }
 
         if (!state.equals(httpSession.getAttribute(LINE_WEB_LOGIN_STATE))){
             return "redirect:/sessionError";
-        };
+        }
 
         httpSession.removeAttribute(LINE_WEB_LOGIN_STATE);
         AccessToken token = lineAPIService.accessToken(code);
@@ -118,15 +120,21 @@ public class WebController {
         AccessToken token = (AccessToken)httpSession.getAttribute(ACCESS_TOKEN);
         if (token == null){
             return "redirect:/";
-        };
-        Profile profile = lineAPIService.profile(token);
-        if (logger.isDebugEnabled()) {
-            logger.debug("userId : " + profile.userId);
-            logger.debug("displayName : " + profile.displayName);
-            logger.debug("pictureUrl : " + profile.pictureUrl);
-            logger.debug("statusMessage : " + profile.statusMessage);
         }
-        model.addAttribute("profile", profile);
+
+        if (!lineAPIService.verifyIdToken(token.id_token, (String) httpSession.getAttribute(NONCE))) {
+            // verify failed
+            return "redirect:/";
+        }
+
+        httpSession.removeAttribute(NONCE);
+        IdToken idToken = lineAPIService.idToken(token.id_token);
+        if (logger.isDebugEnabled()) {
+            logger.debug("userId : " + idToken.sub);
+            logger.debug("displayName : " + idToken.name);
+            logger.debug("pictureUrl : " + idToken.picture);
+        }
+        model.addAttribute("idToken", idToken);
         return "user/success";
     }
 
