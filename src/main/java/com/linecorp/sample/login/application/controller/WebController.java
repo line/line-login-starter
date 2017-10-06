@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.linecorp.sample.login.infra.line.api.v2.LineAPIService;
 import com.linecorp.sample.login.infra.line.api.v2.response.AccessToken;
-import com.linecorp.sample.login.infra.line.api.v2.response.Profile;
+import com.linecorp.sample.login.infra.line.api.v2.response.IdToken;
 import com.linecorp.sample.login.infra.utils.CommonUtils;
 
 /**
@@ -128,13 +128,13 @@ public class WebController {
         }
 
         httpSession.removeAttribute(NONCE);
-        Profile profile = lineAPIService.profile(token.id_token);
+        IdToken idToken = lineAPIService.idToken(token.id_token);
         if (logger.isDebugEnabled()) {
-            logger.debug("userId : " + profile.userId);
-            logger.debug("displayName : " + profile.displayName);
-            logger.debug("pictureUrl : " + profile.pictureUrl);
+            logger.debug("userId : " + idToken.sub);
+            logger.debug("displayName : " + idToken.name);
+            logger.debug("pictureUrl : " + idToken.picture);
         }
-        model.addAttribute("profile", profile);
+        model.addAttribute("idToken", idToken);
         return "user/success";
     }
 

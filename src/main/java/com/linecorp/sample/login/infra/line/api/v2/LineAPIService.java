@@ -25,7 +25,6 @@ import org.springframework.stereotype.Component;
 
 import com.linecorp.sample.login.infra.http.Client;
 import com.linecorp.sample.login.infra.line.api.v2.response.AccessToken;
-import com.linecorp.sample.login.infra.line.api.v2.response.Profile;
 import com.linecorp.sample.login.infra.line.api.v2.response.Verify;
 
 import retrofit2.Call;
@@ -82,12 +81,21 @@ public class LineAPIService {
                 channelSecret));
     }
 
-    public Profile profile(String id_token) {
-        IdToken idToken = deCodeIdToken(id_token);
-        return new Profile(
-                idToken.getDispalyName(),
-                idToken.getUserId(),
-                idToken.getPictureUrl());
+    public IdToken idToken(String id_token) {
+        try {
+            DecodedJWT jwt = JWT.decode(id_token);
+            return new IdToken(
+                    jwt.getClaim("iss").asString(),
+                    jwt.getClaim("sub").asString(),
+                    jwt.getClaim("aud").asString(),
+                    jwt.getClaim("ext").asLong(),
+                    jwt.getClaim("iat").asLong(),
+                    jwt.getClaim("nonce").asString(),
+                    jwt.getClaim("name").asString(),
+                    jwt.getClaim("picture").asString());
+        } catch (JWTDecodeException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String getLineWebLoginUrl(String state, String nonce, List<String> scopes) {
@@ -131,20 +139,4 @@ public class LineAPIService {
         return Client.getClient("https://api.line.me/", LineAPI.class, function);
     }
 
-    private IdToken deCodeIdToken(String id_token) {
-        try {
-            DecodedJWT jwt = JWT.decode(id_token);
-            return new IdToken(
-                    jwt.getClaim("iss").asString(),
-                    jwt.getClaim("sub").asString(),
-                    jwt.getClaim("aud").asString(),
-                    jwt.getClaim("ext").asLong(),
-                    jwt.getClaim("iat").asLong(),
-                    jwt.getClaim("nonce").asString(),
-                    jwt.getClaim("name").asString(),
-                    jwt.getClaim("picture").asString());
-        } catch (JWTDecodeException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }

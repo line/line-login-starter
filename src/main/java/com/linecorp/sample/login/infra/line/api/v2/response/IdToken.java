@@ -16,14 +16,14 @@
 package com.linecorp.sample.login.infra.line.api.v2.response;
 
 public final class IdToken {
-    private String iss;
-    private String sub;
-    private String aud;
-    private Long exp;
-    private Long iat;
-    private String nonce;
-    private String name;
-    private String picture;
+    public final String iss;
+    public final String sub;
+    public final String aud;
+    public final Long exp;
+    public final Long iat;
+    public final String nonce;
+    public final String name;
+    public final String picture;
 
     public IdToken(String iss, String sub, String aud, Long exp, Long iat, String nonce, String name, String picture) {
         this.iss = iss;
@@ -36,16 +36,5 @@ public final class IdToken {
         this.picture = picture;
     };
 
-    public String getUserId() {
-        return aud;
-    }
-
-    public String getDispalyName() {
-        return name;
-    }
-
-    public String getPictureUrl() {
-        return picture;
-    }
 }
 
