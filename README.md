@@ -4,14 +4,7 @@
 This is a starter application to help you get started on integrating the LINE Web Login feature into your website. Web Login lets users log in to your website using their LINE account.
 
 ## Getting started with LINE Login in Java with Heroku
-Here we'll go through how you can implement Web Login on a web server using Spring Boot and Heroku.
-
-### Requirements
-
- - JDK 1.8 or higher
- - Maven 3.0 or higher
- - Git
- - A free [Heroku](https://dashboard.heroku.com/) account
+Here we'll go through how you can implement Web Login on a web server using Spring Boot and Heroku. Before you start, get a free [Heroku](https://dashboard.heroku.com/) account.
 
 ### Creating a Channel
 
@@ -51,10 +44,14 @@ $ heroku login
 ```
 
 #### View logs
-- Clone the source of your existing application from Heroku using Git. For more details, see [Git Cloning Existing Heroku Applications](https://devcenter.heroku.com/articles/git-clone-heroku-app).
 - Use the `heroku logs` comamnd to fetch logs. For more details, see [View logs](https://devcenter.heroku.com/articles/logging#view-logs).
 
  ```
-$ heroku git:clone -a yourapp
-$ heroku logs --tail
+$ heroku logs --app yourapp --tail
 ```
+
+### Requirements
+
+ - JDK 1.8 or higher
+ - Maven 3.0 or higher
+ - Git
