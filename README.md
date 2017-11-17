@@ -60,6 +60,8 @@ You can clone the repository of the starter application to your computer, make c
 
 ### Requirements
 
+The following components must be installed in the execution environment for the starter application.
+
  - JDK 1.8 or higher
  - Maven 3.0 or higher
  - Git
