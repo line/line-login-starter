@@ -8,7 +8,7 @@ The following instructions describe how to deploy the app on Heroku, view logs, 
 ## Requirements
 
 - A LINE Login channel with the "WEB" app type. To create a channel, go to [Creating a Channel](https://developers.line.me/web-api/channel-registration) on the LINE Developers site.
-- A [Heroku](https://dashboard.heroku.com/) (free to create)
+- A [Heroku](https://dashboard.heroku.com/) account (free to create)
 
 ## Deploy the app on Heroku
 
@@ -16,7 +16,7 @@ The following instructions describe how to deploy the app on Heroku, view logs, 
 
 With the "Deploy to Heroku" button, you can easily deploy the LINE Login starter application to Heroku from your web browser by following the steps below.
 
-1. Click the **Deploy to Heroku** button to go to the Heroku Dashboard to configure and deploy the app..
+1. Click the **Deploy to Heroku** button to go to the Heroku Dashboard to configure and deploy the app.
 2. Enter a Heroku app name (optional).
 3. Enter the following Heroku config variables.
     - **Channel ID:** Found in the "Channel settings" page in the [console](https://developers.line.me/console/)
