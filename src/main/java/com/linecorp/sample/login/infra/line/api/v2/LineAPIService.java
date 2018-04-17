@@ -123,6 +123,7 @@ public class LineAPIService {
                 .withIssuer("https://access.line.me")
                 .withAudience(channelId)
                 .withClaim("nonce", nonce)
+                .acceptLeeway(60) // add 60 seconds leeway to handle clock skew between client and server sides.
                 .build()
                 .verify(id_token);
             return true;
