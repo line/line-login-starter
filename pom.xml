@@ -14,7 +14,7 @@
   <properties>
     <java.version>1.8</java.version>
     <retrofit2.groupId>com.squareup.retrofit2</retrofit2.groupId>
-    <retrofit2.version>2.0.0</retrofit2.version>
+    <retrofit2.version>2.5.0</retrofit2.version>
   </properties>
 
   <!-- ================================================================ -->
@@ -59,7 +59,7 @@
     <dependency>
       <groupId>com.squareup.okhttp3</groupId>
       <artifactId>logging-interceptor</artifactId>
-      <version>3.2.0</version>
+      <version>3.12.0</version>
     </dependency>
 
     <!-- use license 'The Apache License, Version 2.0' -->
