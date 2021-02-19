@@ -1,7 +1,7 @@
 # LINE Login Starter Application
 [![Build Status](https://travis-ci.org/line/line-login-starter.svg?branch=master)](https://travis-ci.org/line/line-login-starter)
 
-This is a starter application to help you get started on integrating [LINE Login](https://developers.line.me/en/docs/line-login/overview/) into a web app or website. This sample Java application demonstrates how you can use LINE Login to let users log in to your app with their LINE accounts and to get user information.
+This is a starter application to help you get started on integrating [LINE Login](https://developers.line.biz/en/docs/line-login/overview/) into a web app or website. This sample Java application demonstrates how you can use LINE Login to let users log in to your app with their LINE accounts and to get user information.
 
 The following instructions describe how to deploy the app on Heroku, view logs, and modify the app for yourself.
 
