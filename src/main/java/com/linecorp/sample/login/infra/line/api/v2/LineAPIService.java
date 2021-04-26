@@ -52,12 +52,13 @@ public class LineAPIService {
     @Value("${linecorp.platform.channel.callbackUrl}")
     private String callbackUrl;
 
-    public AccessToken accessToken(String code) {
+    public AccessToken accessToken(String code, String codeVerifier) {
         return getClient(t -> t.accessToken(
                 GRANT_TYPE_AUTHORIZATION_CODE,
                 channelId,
                 channelSecret,
                 callbackUrl,
+                codeVerifier,
                 code));
     }
 
@@ -98,7 +99,8 @@ public class LineAPIService {
         }
     }
 
-    public String getLineWebLoginUrl(String state, String nonce, List<String> scopes) {
+    public String getLineWebLoginUrl(
+            String state, String nonce, String codeChallenge, String codeChallengeMethod, List<String> scopes) {
         final String encodedCallbackUrl;
         final String scope = String.join("%20", scopes);
 
@@ -113,7 +115,9 @@ public class LineAPIService {
                 + "&redirect_uri=" + encodedCallbackUrl
                 + "&state=" + state
                 + "&scope=" + scope
-                + "&nonce=" + nonce;
+                + "&nonce=" + nonce
+                + "&code_challenge=" + codeChallenge
+                + "&code_challenge_method=" + codeChallengeMethod;
     }
 
     public boolean verifyIdToken(String id_token, String nonce) {
