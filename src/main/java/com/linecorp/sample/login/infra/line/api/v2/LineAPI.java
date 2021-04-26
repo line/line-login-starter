@@ -39,6 +39,7 @@ public interface LineAPI {
             @Field("client_id") String client_id,
             @Field("client_secret") String client_secret,
             @Field("redirect_uri") String callback_url,
+            @Field("code_verifier") String code_verifier,
             @Field("code") String code);
 
     @Headers("Content-Type: application/x-www-form-urlencoded")

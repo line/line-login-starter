@@ -29,6 +29,8 @@ import com.linecorp.sample.login.infra.line.api.v2.LineAPIService;
 import com.linecorp.sample.login.infra.line.api.v2.response.AccessToken;
 import com.linecorp.sample.login.infra.line.api.v2.response.IdToken;
 import com.linecorp.sample.login.infra.utils.CommonUtils;
+import com.linecorp.sample.login.infra.pkce.CodeChallengeMethod;
+import com.linecorp.sample.login.infra.pkce.PKCECode;
 
 /**
  * <p>user web application pages</p>
@@ -40,6 +42,7 @@ public class WebController {
     static final String ACCESS_TOKEN = "accessToken";
     private static final Logger logger = Logger.getLogger(WebController.class);
     private static final String NONCE = "nonce";
+    private static final String LINE_WEB_LOGIN_CODE_VERIFIER = "lineWebLoginCodeVerifier";
 
     @Autowired
     private LineAPIService lineAPIService;
@@ -62,7 +65,16 @@ public class WebController {
         final String nonce = CommonUtils.getToken();
         httpSession.setAttribute(LINE_WEB_LOGIN_STATE, state);
         httpSession.setAttribute(NONCE, nonce);
-        final String url = lineAPIService.getLineWebLoginUrl(state, nonce, Arrays.asList("openid", "profile"));
+
+        // generate PKCE code
+        PKCECode pkce = PKCECode.newCode();
+        final String codeVerifier = pkce.getVerifier();
+        final String codeChallenge = pkce.getChallenge();
+        httpSession.setAttribute(LINE_WEB_LOGIN_CODE_VERIFIER, codeVerifier);
+        final String codeChallengeMethod = CodeChallengeMethod.S256.getValue();
+
+        final String url = lineAPIService.getLineWebLoginUrl(
+                state, nonce, codeChallenge, codeChallengeMethod, Arrays.asList("openid", "profile"));
         return "redirect:" + url;
     }
 
@@ -98,7 +110,9 @@ public class WebController {
         }
 
         httpSession.removeAttribute(LINE_WEB_LOGIN_STATE);
-        AccessToken token = lineAPIService.accessToken(code);
+        String codeVerifier = httpSession.getAttribute(LINE_WEB_LOGIN_CODE_VERIFIER).toString();
+        logger.debug("parameter codeVerifier : " + codeVerifier);
+        AccessToken token = lineAPIService.accessToken(code, codeVerifier);
         if (logger.isDebugEnabled()) {
             logger.debug("scope : " + token.scope);
             logger.debug("access_token : " + token.access_token);
