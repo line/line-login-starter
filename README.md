@@ -12,7 +12,7 @@ The following instructions describe how to deploy the app on Heroku, view logs, 
 
 ## Deploy the app on Heroku
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/line/line-login-starter/)
 
 With the "Deploy to Heroku" button, you can easily deploy the LINE Login starter application to Heroku from your web browser by following the steps below.
 
